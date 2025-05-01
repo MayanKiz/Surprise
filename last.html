@@ -1,76 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surprise - Chhota Don</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Surprise for You</title>
     <style>
         body {
             margin: 0;
             height: 100vh;
+            background: #0f2027;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            font-family: 'Orbitron', sans-serif;
             color: #fff;
+            font-family: 'Orbitron', sans-serif;
             overflow: hidden;
             position: relative;
         }
-        .container {
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
-            text-align: center;
-            z-index: 1;
-        }
-        h1 {
-            margin-bottom: 20px;
-            font-size: 2em;
-            color: #ff69b4;
-        }
-        p {
-            font-size: 1.2em;
-            color: #ffb6c1;
+        .hearts {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
         .heart {
             position: absolute;
             width: 20px;
             height: 20px;
-            background: url('https://cdn-icons-png.flaticon.com/512/833/833472.png') no-repeat center center / contain;
-            animation: float 5s infinite ease-in-out;
-            opacity: 0.8;
+            background: red;
+            transform: rotate(45deg);
+            animation: float 6s linear infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%;
+        }
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        .heart::after {
+            left: -10px;
+            top: 0;
         }
         @keyframes float {
             0% {
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                transform: translateY(-100px) scale(1.2);
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 1;
             }
             100% {
-                transform: translateY(0) scale(1);
+                transform: translateY(-10vh) rotate(45deg);
+                opacity: 0;
             }
+        }
+        .message {
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+        .hidden {
+            display: none;
+        }
+        #countdown {
+            font-size: 5rem;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            display: none;
+        }
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 15px #0ff;
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>😝 Ullu Bnya Bada Maja Aya 😁!</h1>
-        <p>Surprise ke liye wait karo dude,<br> kuch din me milega tumko!</p>
+    <div class="hearts"></div>
+    <div class="message" id="messageBox">
+        <h1 id="mainText">Your surprise is ready!</h1>
     </div>
+    <div id="countdown"></div>
 
-    <!-- Multiple hearts -->
-    <div class="heart" style="left: 10%; top: 80%; animation-delay: 0s;"></div>
-    <div class="heart" style="left: 30%; top: 85%; animation-delay: 1s;"></div>
-    <div class="heart" style="left: 50%; top: 78%; animation-delay: 2s;"></div>
-    <div class="heart" style="left: 70%; top: 82%; animation-delay: 3s;"></div>
-    <div class="heart" style="left: 90%; top: 80%; animation-delay: 4s;"></div>
+    <!-- Sounds -->
+    <audio id="funnySound" src="https://www.fesliyanstudios.com/play-mp3/6820" preload="auto"></audio>
+    <audio id="tickSound" src="https://www.fesliyanstudios.com/play-mp3/393" preload="auto"></audio>
 
-    <audio id="funnySound" src="https://www.fesliyanstudios.com/play-mp3/6820" autoplay></audio>
+    <script>
+        // Generate hearts
+        const heartsContainer = document.querySelector('.hearts');
+        for (let i = 0; i < 30; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.animationDuration = `${Math.random() * 3 + 3}s`;
+            heartsContainer.appendChild(heart);
+        }
 
+        const messageBox = document.getElementById('messageBox');
+        const mainText = document.getElementById('mainText');
+        const countdown = document.getElementById('countdown');
+        const funnySound = document.getElementById('funnySound');
+        const tickSound = document.getElementById('tickSound');
+
+        // Show "Your surprise is ready!" for 3 seconds
+        setTimeout(() => {
+            messageBox.classList.add('hidden');
+            startCountdown(3);
+        }, 3000);
+
+        function startCountdown(number) {
+            countdown.style.display = 'block';
+            countdown.textContent = number;
+            tickSound.currentTime = 0;
+            tickSound.play();
+
+            if (number > 1) {
+                setTimeout(() => {
+                    startCountdown(number - 1);
+                }, 1000);
+            } else {
+                // Countdown complete
+                setTimeout(() => {
+                    countdown.style.display = 'none';
+                    showFinalMessage();
+                }, 1000);
+            }
+        }
+
+        function showFinalMessage() {
+            funnySound.play();
+            messageBox.classList.remove('hidden');
+            mainText.innerHTML = '😝 Ullu Bnya Bada Maja aya hehehehe 😁!<br>Surprise ke liye wait karo dude, kuch din mein milega tumko!....isi site pe ';
+        }
+    </script>
 </body>
 </html>
