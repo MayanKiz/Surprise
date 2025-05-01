@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacked Warning</title>
+    <title>Secure Access - Chhota Don</title>
     <style>
         body {
             margin: 0;
@@ -10,95 +11,110 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            font-family: 'Courier New', Courier, monospace;
-            color: white;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        .container {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
             text-align: center;
-            transition: background 0.5s;
-            animation: bgChange 1s infinite;
-        }@keyframes bgChange {
-        0% { background: red; }
-        33% { background: green; }
-        66% { background: blue; }
-        100% { background: red; }
-    }
-
-    .glitch {
-        font-size: 2rem;
-        position: relative;
-        color: white;
-    }
-
-    .glitch::before, .glitch::after {
-        content: attr(data-text);
-        position: absolute;
-        left: 0;
-        width: 100%;
-        background: black;
-        overflow: hidden;
-        clip: rect(0, 900px, 0, 0);
-    }
-
-    .glitch::before {
-        animation: glitchTop 1s infinite linear alternate-reverse;
-        color: red;
-    }
-
-    .glitch::after {
-        animation: glitchBottom 1s infinite linear alternate-reverse;
-        color: lime;
-    }
-
-    @keyframes glitchTop {
-        0% { clip: rect(0, 9999px, 0, 0); }
-        20% { clip: rect(0, 9999px, 20px, 0); }
-        40% { clip: rect(0, 9999px, 0, 0); }
-        60% { clip: rect(0, 9999px, 20px, 0); }
-        80% { clip: rect(0, 9999px, 0, 0); }
-        100% { clip: rect(0, 9999px, 20px, 0); }
-    }
-
-    @keyframes glitchBottom {
-        0% { clip: rect(0, 9999px, 0, 0); }
-        20% { clip: rect(20px, 9999px, 40px, 0); }
-        40% { clip: rect(0, 9999px, 0, 0); }
-        60% { clip: rect(20px, 9999px, 40px, 0); }
-        80% { clip: rect(0, 9999px, 0, 0); }
-        100% { clip: rect(20px, 9999px, 40px, 0); }
-    }
-
-    .danger-sign {
-        font-size: 4rem;
-        margin-top: 20px;
-        animation: pulse 1s infinite;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); color: yellow; }
-        100% { transform: scale(1); }
-    }
-</style>
-
+            transition: all 0.3s ease;
+        }
+        h2 {
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        input[type="text"] {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            width: 250px;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            color: #0ff;
+            box-shadow: 0 0 10px #0ff;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus {
+            box-shadow: 0 0 20px #0ff;
+        }
+        .shake {
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+        .success {
+            box-shadow: 0 0 30px #00ff99;
+            animation: successPulse 0.6s ease;
+        }
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-    <h1 class="glitch" data-text="😝\nYour device is being hacked">😝<br>Your device is being hacked<br><br>[[ Kuch nhi hua hh tumhre device ko......<br>Intazzar karo kuch din k andar tumhe bhut achha surprise milega ]]<br><br>Mere dwara 😁😍</h1>
-    <div class="danger-sign">⚠️</div><audio id="beep" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+    <div class="container" id="loginBox">
+        <h2>Type Your Name for the Surprise</h2>
+        <input type="text" id="nameInput" placeholder="Your Name...">
+    </div>
 
-<script>
-    // Beep sound repeat
-    const beep = document.getElementById('beep');
-    setInterval(() => {
-        beep.play();
-    }, 500);
+    <audio id="typeSound" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
+    <audio id="errorSound" src="https://www.fesliyanstudios.com/play-mp3/4384" preload="auto"></audio>
+    <audio id="successSound" src="https://www.fesliyanstudios.com/play-mp3/6681" preload="auto"></audio>
 
-    // Vibrate every 500ms
-    setInterval(() => {
-        if (navigator.vibrate) {
-            navigator.vibrate([200]);
+    <script>
+        const nameInput = document.getElementById('nameInput');
+        const loginBox = document.getElementById('loginBox');
+        const typeSound = document.getElementById('typeSound');
+        const errorSound = document.getElementById('errorSound');
+        const successSound = document.getElementById('successSound');
+
+        const correctName = 'priyanshi'; // yahan apni desired name daal sakte ho
+
+        nameInput.addEventListener('input', () => {
+            typeSound.currentTime = 0;
+            typeSound.play();
+        });
+
+        nameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (nameInput.value.trim().toLowerCase() === correctName) {
+                    success();
+                } else {
+                    fail();
+                }
+            }
+        });
+
+        function fail() {
+            errorSound.play();
+            loginBox.classList.add('shake');
+            navigator.vibrate(500);
+            setTimeout(() => loginBox.classList.remove('shake'), 400);
         }
-    }, 500);
-</script>
 
+        function success() {
+            successSound.play();
+            loginBox.classList.add('success');
+            setTimeout(() => {
+                window.location.href = 'last.html'; // redirect to last.html
+            }, 1200);
+        }
+    </script>
 </body>
 </html>
