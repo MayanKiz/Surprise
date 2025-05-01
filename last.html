@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise - Chhota Don</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            text-align: center;
+            z-index: 1;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #ff69b4;
+        }
+        p {
+            font-size: 1.2em;
+            color: #ffb6c1;
+        }
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('https://cdn-icons-png.flaticon.com/512/833/833472.png') no-repeat center center / contain;
+            animation: float 5s infinite ease-in-out;
+            opacity: 0.8;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-100px) scale(1.2);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>😝 Ullu Bnya Bada Maja Aya 😁!</h1>
+        <p>Surprise ke liye wait karo dude,<br> kuch din me milega tumko!</p>
+    </div>
+
+    <!-- Multiple hearts -->
+    <div class="heart" style="left: 10%; top: 80%; animation-delay: 0s;"></div>
+    <div class="heart" style="left: 30%; top: 85%; animation-delay: 1s;"></div>
+    <div class="heart" style="left: 50%; top: 78%; animation-delay: 2s;"></div>
+    <div class="heart" style="left: 70%; top: 82%; animation-delay: 3s;"></div>
+    <div class="heart" style="left: 90%; top: 80%; animation-delay: 4s;"></div>
+
+    <audio id="funnySound" src="https://www.fesliyanstudios.com/play-mp3/6820" autoplay></audio>
+
+</body>
+</html>
