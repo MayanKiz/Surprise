@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Secure Access - Chhota Don</title>
     <style>
         body {
@@ -69,10 +69,11 @@
 </head>
 <body>
     <div class="container" id="loginBox">
-        <h2>Type Your Name in correct way for the Surprise</h2>
-        <input type="text" id="nameInput" placeholder="Your Name...">
+        <h2>Type your name in correct way for the surprise ms Don</h2>
+        <input type="text" id="nameInput" placeholder="Your Nickname😁">
     </div>
 
+    <!-- Sounds -->
     <audio id="typeSound" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
     <audio id="errorSound" src="https://www.fesliyanstudios.com/play-mp3/4384" preload="auto"></audio>
     <audio id="successSound" src="https://www.fesliyanstudios.com/play-mp3/6681" preload="auto"></audio>
@@ -84,7 +85,7 @@
         const errorSound = document.getElementById('errorSound');
         const successSound = document.getElementById('successSound');
 
-        const correctName = 'chota don'; // yahan apni desired name daal sakte ho
+        const correctName = 'chota don'; // Lowercase
 
         nameInput.addEventListener('input', () => {
             typeSound.currentTime = 0;
@@ -105,14 +106,17 @@
             errorSound.play();
             loginBox.classList.add('shake');
             navigator.vibrate(500);
-            setTimeout(() => loginBox.classList.remove('shake'), 400);
+            setTimeout(() => {
+                loginBox.classList.remove('shake');
+                nameInput.value = ''; // Clear the wrong input
+            }, 400);
         }
 
         function success() {
             successSound.play();
             loginBox.classList.add('success');
             setTimeout(() => {
-                window.location.href = 'last.html'; // redirect to last.html
+                window.location.href = 'last.html';
             }, 1200);
         }
     </script>
