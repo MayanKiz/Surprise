@@ -66,19 +66,19 @@
             z-index: 1;
             position: relative;
         }
-        .hidden {
-            display: none;
-        }
         #countdown {
             font-size: 5rem;
             color: #00ffff;
             text-shadow: 0 0 20px #00ffff;
             display: none;
+            z-index: 2;
+            position: relative;
         }
         h1 {
             font-size: 2rem;
             text-shadow: 0 0 15px #0ff;
             margin: 0;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -112,12 +112,12 @@
 
         // Show "Your surprise is ready!" for 3 seconds
         setTimeout(() => {
-            messageBox.classList.add('hidden');
+            messageBox.style.display = 'none';  // hide message
+            countdown.style.display = 'block';  // show countdown
             startCountdown(3);
         }, 3000);
 
         function startCountdown(number) {
-            countdown.style.display = 'block';
             countdown.textContent = number;
             tickSound.currentTime = 0;
             tickSound.play();
@@ -137,9 +137,8 @@
 
         function showFinalMessage() {
             funnySound.play();
-            messageBox.classList.remove('hidden');
-            mainText.innerHTML = '😝 Ullu Bnya Bada Maja aya hehehehe...
-O balle balle ooo shaba shaba koi surprise nhi hh😛😊😁!<br>acha suno tumko kuch din me milega pakka btw maine phli bar aisii site bnyi hh ..... <br>Surprise ke liye wait karo dude, ......isi site pe ';
+            messageBox.style.display = 'block';  // show message again
+            mainText.innerHTML = '😝 Ullu Bnya Bada Maja aya hehehehe...<br>O balle balle ooo shaba shaba koi surprise nhi hh 😛😊😁!<br>Acha suno tumko kuch din me milega pakka btw maine phli bar aisii site bnyi hh .....<br><strong>Surprise ke liye wait karo dude, ......isi site pe 😍</strong>';
         }
     </script>
 </body>
