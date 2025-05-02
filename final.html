@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Secure Access - Chhota Don</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -25,7 +26,8 @@
             box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
             text-align: center;
             transition: all 0.3s ease;
-            width: 320px;
+            width: 90%;
+            max-width: 350px;
         }
         h2 {
             margin-bottom: 25px;
@@ -61,9 +63,10 @@
         }
         .emoji {
             position: absolute;
-            pointer-events: none;
+            left: 10px;
             font-size: 20px;
             color: #ff69b4;
+            pointer-events: none;
         }
         .shake {
             animation: shake 0.4s;
@@ -88,9 +91,9 @@
 </head>
 <body>
     <div class="container" id="loginBox">
-        <h2>Type your name in correct way for the surprise dude 😊</h2>
+        <h2>Type your nickname in correct way for the surprise dude 😊</h2>
         <div class="input-wrapper">
-            <span class="emoji"> </span>
+            <span class="emoji">😎</span>
             <input type="text" id="nameInput" placeholder="Your Nickname 😁">
         </div>
     </div>
@@ -107,7 +110,7 @@
         const errorSound = document.getElementById('errorSound');
         const successSound = document.getElementById('successSound');
 
-        const correctName = 'nautanki'; // Lowercase
+        const correctName = 'nautanki'; // <-- Ye nickname hai jo correct daalna hoga
 
         nameInput.addEventListener('input', () => {
             typeSound.currentTime = 0;
@@ -127,7 +130,9 @@
         function fail() {
             errorSound.play();
             loginBox.classList.add('shake');
-            navigator.vibrate(500);
+            if (navigator.vibrate) {
+                navigator.vibrate(300);
+            }
             setTimeout(() => {
                 loginBox.classList.remove('shake');
                 nameInput.value = ''; // Clear the wrong input
@@ -138,8 +143,8 @@
             successSound.play();
             loginBox.classList.add('success');
             setTimeout(() => {
-                window.location.href = 'last.html';
-            }, 1200);
+                window.location.href = 'last.html'; // Change this if needed
+            }, 1000);
         }
     </script>
 </body>
