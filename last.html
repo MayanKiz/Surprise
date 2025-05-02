@@ -2,143 +2,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Surprise for You</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Special Surprise 💝</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             height: 100vh;
-            background: #0f2027;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
             font-family: 'Orbitron', sans-serif;
+            color: #fff;
             overflow: hidden;
-            position: relative;
         }
-        .hearts {
+        .heart-outline {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-        .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: red;
-            transform: rotate(45deg);
-            animation: float 6s linear infinite;
-        }
-        .heart::before,
-        .heart::after {
-            content: "";
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: red;
+            width: 300px;
+            height: 300px;
+            border: 5px solid #007BFF;
             border-radius: 50%;
+            box-shadow: 0 0 60px #007BFF, 0 0 100px #4DA3FF inset;
+            animation: pulse 2s infinite;
         }
-        .heart::before {
-            top: -10px;
-            left: 0;
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .heart::after {
-            left: -10px;
-            top: 0;
-        }
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(45deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) rotate(45deg);
-                opacity: 0;
-            }
-        }
-        .message {
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
-            z-index: 1;
-            position: relative;
-        }
-        #countdown {
-            font-size: 5rem;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-            display: none;
+            max-width: 90%;
+            width: 360px;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
             z-index: 2;
             position: relative;
         }
-        h1 {
-            font-size: 2rem;
-            text-shadow: 0 0 15px #0ff;
-            margin: 0;
-            line-height: 1.5;
+        .card h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.4rem;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+        .button-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #007BFF;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #339CFF;
         }
     </style>
 </head>
 <body>
-    <div class="hearts"></div>
-    <div class="message" id="messageBox">
-        <h1 id="mainText">Your surprise is ready!</h1>
+    <div class="heart-outline"></div>
+    <div class="card" id="card">
+        <h1 id="mainText">Oye hoye! Bahut badhiya laga mujhe 😄. Ab batao, kya aap surprise dekhne ke liye tayaar ho? 🎁</h1>
+        <div class="button-box" id="buttonBox">
+            <button onclick="handleResponse('ready')">Haan, main bilkul tayaar hoon! 🚀</button>
+            <button onclick="handleResponse('not_now')">Nahi, abhi nahi dekhna 😅</button>
+        </div>
     </div>
-    <div id="countdown"></div>
-
-    <!-- Sounds -->
-    <audio id="funnySound" src="https://www.fesliyanstudios.com/play-mp3/6820" preload="auto"></audio>
-    <audio id="tickSound" src="https://www.fesliyanstudios.com/play-mp3/393" preload="auto"></audio>
 
     <script>
-        // Generate hearts
-        const heartsContainer = document.querySelector('.hearts');
-        for (let i = 0; i < 30; i++) {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.style.left = `${Math.random() * 100}%`;
-            heart.style.animationDuration = `${Math.random() * 3 + 3}s`;
-            heartsContainer.appendChild(heart);
-        }
-
-        const messageBox = document.getElementById('messageBox');
         const mainText = document.getElementById('mainText');
-        const countdown = document.getElementById('countdown');
-        const funnySound = document.getElementById('funnySound');
-        const tickSound = document.getElementById('tickSound');
+        const buttonBox = document.getElementById('buttonBox');
 
-        // Show "Your surprise is ready!" for 3 seconds
-        setTimeout(() => {
-            messageBox.style.display = 'none';  // hide message
-            countdown.style.display = 'block';  // show countdown
-            startCountdown(3);
-        }, 3000);
-
-        function startCountdown(number) {
-            countdown.textContent = number;
-            tickSound.currentTime = 0;
-            tickSound.play();
-
-            if (number > 1) {
-                setTimeout(() => {
-                    startCountdown(number - 1);
-                }, 1000);
-            } else {
-                // Countdown complete
-                setTimeout(() => {
-                    countdown.style.display = 'none';
-                    showFinalMessage();
-                }, 1000);
-            }
+        function showButtons() {
+            buttonBox.style.opacity = 1;
         }
 
-        function showFinalMessage() {
-            funnySound.play();
-            messageBox.style.display = 'block';  // show message again
-            mainText.innerHTML = '😝 Ullu Bnya Bada Maja aya hehehehe...<br>O balle balle ooo shaba shaba koi surprise nhi hh 😛😊😁!<br>Acha suno tumko kuch din me milega pakka btw maine phli bar aisii site bnyi hh .....<br><strong>Surprise ke liye wait karo dude, ......isi site pe 😍</strong>';
+        setTimeout(showButtons, 2000);
+
+        function handleResponse(response) {
+            buttonBox.style.opacity = 0;
+
+            if (response === 'ready') {
+                setTimeout(() => {
+                    mainText.innerHTML = 'Bahut accha! 😊 Ek zaroori sawal hai... kya aap mujhe apna saccha aur achha dost maanti ho? 🤔';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('yes_friend')">Haan, bilkul maanti hoon 🤗</button>
+                        <button onclick="handleResponse('no_friend')">Nahi, aisa kuch khaas nahi 😬</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'not_now') {
+                setTimeout(() => {
+                    mainText.innerHTML = 'Koi baat nahi! 😊 Waise ek baat batao, kya aap sach mein mujhe apna accha dost maanti ho?';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('yes_friend')">Haan, tu best dost hai! 🤝</button>
+                        <button onclick="handleResponse('no_friend')">Nahi yaar, bas normal dost 😅</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'yes_friend') {
+                setTimeout(() => {
+                    mainText.innerHTML = 'Wah! Ye sunkar dil khush ho gaya 🥹. Ab please confirm karo, kya aap surprise dekhna chahti ho? 🎉';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('final_yes')">Haan, abhi dekhna hai! 😍</button>
+                        <button onclick="handleResponse('final_no')">Nahi, abhi bhi nahi 😅</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'no_friend') {
+                setTimeout(() => {
+                    mainText.innerHTML = '😔 Achha... mujhe laga hum acche dost hain. Chalo koi baat nahi, aapka decision hai. Lekin sach batao, kya aapko thodi bhi curiosity hai surprise dekhne ki?';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('final_yes')">Haan, ab thodi hai 😅</button>
+                        <button onclick="handleResponse('emotional_exit')">Nahi, bilkul bhi nahi 😐</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'final_yes') {
+                setTimeout(() => {
+                    mainText.innerHTML = 'Perfect! 😊 Last confirmation... kya aap sure ho ki aap surprise dekhna chahti ho? Yeh final option hai! 🚀';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('super_final')">Haan, 100% sure! 🔥</button>
+                        <button onclick="handleResponse('last_no')">Nahi, abhi bhi sure nahi hoon 😅</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'final_no') {
+                setTimeout(() => {
+                    mainText.innerHTML = 'Aree yaar! Itna sab kar diya aur ab bhi nakhre 😤. Chal ek last baar puch raha hoon, dekhna hai ki nahi? 🧐';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('super_final')">Haan theek hai, dekh leti hoon 😄</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'last_no') {
+                setTimeout(() => {
+                    mainText.innerHTML = '😂 Tum toh pakki nautanki queen ho! Chal last baar confirm karte hain, ready ho?';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('super_final')">Haan ready hoon! 🚀</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'emotional_exit') {
+                setTimeout(() => {
+                    mainText.innerHTML = '😢 Achha theek hai... mujhe laga hum best dost hain, par koi nahi... jao phir! 💔';
+                    buttonBox.innerHTML = `
+                        <button onclick="handleResponse('yes_friend')">Sorry yaar! Tu best dost hai 🤗</button>
+                    `;
+                    setTimeout(showButtons, 2000);
+                }, 500);
+            }
+
+            else if (response === 'super_final') {
+                // Redirect to countdown page
+                window.location.href = "countdown.html";
+            }
         }
     </script>
 </body>
