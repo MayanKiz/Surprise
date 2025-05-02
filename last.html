@@ -76,10 +76,10 @@
 <body>
     <div class="heart-outline"></div>
     <div class="card" id="card">
-        <h1 id="mainText">Oye hoye! Bahut badhiya laga mujhe 😄. Ab batao, kya aap surprise dekhne ke liye tayaar ho? 🎁</h1>
+        <h1 id="mainText">Oye hoye! ..... 😄. Ab batao, kya aap surprise dekhne ke liye tayaar ho? 🎁</h1>
         <div class="button-box" id="buttonBox">
-            <button onclick="handleResponse('ready')">Haan, main bilkul tayaar hoon! 🚀</button>
-            <button onclick="handleResponse('not_now')">Nahi, abhi nahi dekhna 😅</button>
+            <button onclick="handleResponse('ready')">Hnji, mai bilkul taiyaar hoon! 🚀</button>
+            <button onclick="handleResponse('not_now')">Nhi, abhi man nahi hai dekhne ka 😅</button>
         </div>
     </div>
 
@@ -98,10 +98,10 @@
 
             if (response === 'ready') {
                 setTimeout(() => {
-                    mainText.innerHTML = 'Bahut accha! 😊 Ek zaroori sawal hai... kya aap mujhe apna saccha aur achha dost maanti ho? 🤔';
+                    mainText.innerHTML = 'Bahut accha! 😊 Ek zaroori sawal hai khash apke liye...... kya aap mujhe apna sacchas aur achha dost maanti ho? yani best friend...?🤔';
                     buttonBox.innerHTML = `
-                        <button onclick="handleResponse('yes_friend')">Haan, bilkul maanti hoon 🤗</button>
-                        <button onclick="handleResponse('no_friend')">Nahi, aisa kuch khaas nahi 😬</button>
+                        <button onclick="handleResponse('yes_friend')">Hnji, bilkul maanti hoon 🤗</button>
+                        <button onclick="handleResponse('no_friend')">Nahi, aisa kuch nahi hai 😬</button>
                     `;
                     setTimeout(showButtons, 2000);
                 }, 500);
@@ -109,9 +109,9 @@
 
             else if (response === 'not_now') {
                 setTimeout(() => {
-                    mainText.innerHTML = 'Koi baat nahi! 😊 Waise ek baat batao, kya aap sach mein mujhe apna accha dost maanti ho?';
+                    mainText.innerHTML = 'Koi baat nahi! 😊 Waise ek baat batao, kya aap sach mein mujhe apna Best Friend maanti ho?';
                     buttonBox.innerHTML = `
-                        <button onclick="handleResponse('yes_friend')">Haan, tu best dost hai! 🤝</button>
+                        <button onclick="handleResponse('yes_friend')">Hn Hn, tu best Friend...hai! 🤝</button>
                         <button onclick="handleResponse('no_friend')">Nahi yaar, bas normal dost 😅</button>
                     `;
                     setTimeout(showButtons, 2000);
