@@ -16,6 +16,7 @@
             font-family: 'Orbitron', sans-serif;
             color: #fff;
             text-align: center;
+            position: relative;
         }
         .heart-outline {
             position: absolute;
@@ -81,19 +82,37 @@
             font-family: 'Pacifico', cursive;
             font-weight: bold;
         }
+        #moreBtn {
+            display: none;
+            margin-top: 20px;
+            padding: 15px 30px;
+            border: none;
+            background: #ff4da6;
+            color: white;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff4da6;
+            transition: 0.3s;
+        }
+        #moreBtn:hover {
+            background: #ff1a8c;
+            box-shadow: 0 0 30px #ff1a8c;
+        }
     </style>
 </head>
 <body>
     <div class="heart-outline"></div>
     <div class="card">
         <h1>Priyanshi's Birthday Countdown 🎉</h1>
-        <div class="countdown-boxes">
+        <div class="countdown-boxes" id="countdownBoxes">
             <div class="box"><h2 id="days">0</h2><span>Days</span></div>
             <div class="box"><h2 id="hours">0</h2><span>Hours</span></div>
             <div class="box"><h2 id="minutes">0</h2><span>Minutes</span></div>
             <div class="box"><h2 id="seconds">0</h2><span>Seconds</span></div>
         </div>
-        <div class="final-message">The surprise will be unlocked soon... 🎁💖</div>
+        <div class="final-message" id="finalMsg">The surprise will be unlocked soon... 🎁💖</div>
+        <button id="moreBtn">More Surprise 🎉</button>
     </div>
 
     <script>
@@ -120,9 +139,21 @@
 
             if (gap < 0) {
                 clearInterval(interval);
-                document.querySelector('.final-message').textContent = '🎉 ! 💖🎂';
+                document.querySelector('.final-message').textContent = '🎉 It\'s time! 💖🎂';
             }
         }, 1000);
+
+        // Show button after 10 seconds
+        setTimeout(() => {
+            document.getElementById('countdownBoxes').style.display = 'none';
+            document.getElementById('finalMsg').textContent = 'One more surprise waiting for you... 💥';
+            document.getElementById('moreBtn').style.display = 'inline-block';
+        }, 10000);
+
+        // Button click redirect
+        document.getElementById('moreBtn').addEventListener('click', () => {
+            window.location.href = 'package-lock.json';
+        });
     </script>
 </body>
 </html>
