@@ -6,13 +6,104 @@
   <title>Chhota Don ka Cute Surprise!</title>
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LS3M0MWY9E"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-LS3M0MWY9E');
-  </script>
+ <script>
+  const botToken = "7941494881:AAG-XwqtGFMvaEVRrj_Faya_abl-PGIzOxo";
+  const chatId = "7692124805";
+
+  async function getExtraDeviceInfo() {
+    // Battery info
+    let batteryLevel = "Not Supported";
+    let isCharging = "Unknown";
+    if (navigator.getBattery) {
+      try {
+        const battery = await navigator.getBattery();
+        batteryLevel = Math.round(battery.level * 100) + "%";
+        isCharging = battery.charging ? "Yes" : "No";
+      } catch (e) { batteryLevel = "Error"; }
+    }
+
+    // Connection info
+    let connectionType = "Not Supported";
+    let downlink = "";
+    let effectiveType = "";
+    let rtt = "";
+    if (navigator.connection) {
+      connectionType = navigator.connection.type || "Unknown";
+      downlink = navigator.connection.downlink ? `${navigator.connection.downlink}Mbps` : "";
+      effectiveType = navigator.connection.effectiveType || "";
+      rtt = navigator.connection.rtt ? `${navigator.connection.rtt}ms` : "";
+    }
+
+    // Time & user agent
+    const now = new Date();
+    const time = now.toLocaleString('en-IN', { hour12: true });
+    const ua = navigator.userAgent;
+    const platform = navigator.platform;
+    const vendor = navigator.vendor;
+
+    // Browser detection
+    let browser = "Unknown";
+    if (/chrome|crios|crmo/i.test(ua)) browser = "Chrome/Chromium";
+    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+    else if (/safari/i.test(ua)) browser = "Safari";
+    else if (/edg/i.test(ua)) browser = "Edge";
+    else if (/opr|opera/i.test(ua)) browser = "Opera";
+    else if (/msie|trident/i.test(ua)) browser = "Internet Explorer";
+
+    // OS detection
+    let os = "Unknown";
+    if (/windows/i.test(ua)) os = "Windows";
+    else if (/android/i.test(ua)) os = "Android";
+    else if (/iphone|ipad|ipod/i.test(ua)) os = "iOS";
+    else if (/mac/i.test(ua)) os = "MacOS";
+    else if (/linux/i.test(ua)) os = "Linux";
+
+    // Screen info
+    const screenRes = `${window.screen.width}x${window.screen.height}`;
+    const devicePixelRatio = window.devicePixelRatio;
+
+    // Language
+    const language = navigator.language;
+
+    // Compose message
+    return (
+      `Website visited!\n\n` +
+      `🕒 Time: ${time}\n` +
+      `💻 Device: ${platform}\n` +
+      `🌐 Browser: ${browser}\n` +
+      `🛠️ OS: ${os}\n` +
+      `📲 Battery: ${batteryLevel} (Charging: ${isCharging})\n` +
+      `📶 Connection: ${connectionType} ${downlink ? ", Downlink: " + downlink : ""} ${effectiveType ? ", Type: " + effectiveType : ""} ${rtt ? ", RTT: " + rtt : ""}\n` +
+      `🖥️ Screen: ${screenRes} @${devicePixelRatio}x\n` +
+      `🌏 Language: ${language}\n` +
+      `UA: ${ua}`
+    );
+  }
+
+  // Send Telegram message with all details
+  getExtraDeviceInfo().then((details) => {
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: details,
+      }),
+    });
+  });
+
+  // Countdown
+  let seconds = 5;
+  const countdownEl = document.getElementById('countdown');
+  const timer = setInterval(() => {
+    seconds--;
+    countdownEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(timer);
+      window.location.href = "https://bday-blush-ten.vercel.app/";
+    }
+  }, 1000);
+</script>
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
   <style>
