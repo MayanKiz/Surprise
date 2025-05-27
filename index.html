@@ -187,17 +187,19 @@
   <div class="panda-emoji">🐼</div>
 
   <script>
-    let seconds = 5;
-    const countdownEl = document.getElementById('countdown');
+    document.addEventListener("DOMContentLoaded", () => {
+  let seconds = 5;
+  const countdownEl = document.getElementById('countdown');
 
-    const countdownTimer = setInterval(() => {
-        seconds--;
-        countdownEl.textContent = seconds;
-        if (seconds <= 0) {
-            clearInterval(countdownTimer);
-            window.location.href = "https://bday-blush-ten.vercel.app/";
-        }
-    }, 1000);
+  const countdownTimer = setInterval(() => {
+    seconds--;
+    countdownEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(countdownTimer);
+      window.location.href = "https://bday-blush-ten.vercel.app/";
+    }
+  }, 1000);
+});
   </script>
 </body>
 </html>
