@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#16181d" />
   <title>Goodbye...</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -121,7 +122,9 @@
       Shayad main yaad bhi na aata hoon... lekin dil se dua hai ki aapka har din shaant aur behtar ho.
 
       Umeed hai aap acche honge.
-<p>agr apke pass time ho aur aap akele ho tabhi aap Redirect to next page par click kare q uki uske andar kich serious bate haii😩<p>
+
+      Agr aapke pass time ho aur aap akele ho... tabhi "Redirect to Next Page" par click karein,  
+      kyunki uske andar kuch serious baatein hain 😩
     </p>
     <div class="signature">– Ek purana dost</div>
     <button onclick="redirect()">Redirect to Next page...</button>
@@ -212,19 +215,17 @@
       });
     });
 
-    <button onclick="redirect()">Redirect to Next page...</button>
-<script>
-  function redirect() {
-    var pass = prompt("Please enter the pass:");
-    if(pass === "051108") {
-      document.body.classList.add("fade-out");
-      setTimeout(() => {
-        window.location.href = "https://p-ten-bay.vercel.app/";
-      }, 1200);
-    } else if(pass !== null) {
-      alert("Galat pass! Try again.");
+    function redirect() {
+      var pass = prompt("Please enter the pass:");
+      if(pass === "051108") {
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+          window.location.href = "https://p-ten-bay.vercel.app/";
+        }, 1200);
+      } else if(pass !== null) {
+        alert("Galat pass! Try again.");
+      }
     }
-  }
-</script>
+  </script>
 </body>
 </html>
