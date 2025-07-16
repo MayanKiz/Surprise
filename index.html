@@ -212,12 +212,19 @@
       });
     });
 
-    function redirect() {
+    <button onclick="redirect()">Redirect to Next page...</button>
+<script>
+  function redirect() {
+    var pass = prompt("Please enter the pass:");
+    if(pass === "051108") {
       document.body.classList.add("fade-out");
       setTimeout(() => {
         window.location.href = "https://p-ten-bay.vercel.app/";
       }, 1200);
+    } else if(pass !== null) {
+      alert("Galat pass! Try again.");
     }
-  </script>
+  }
+</script>
 </body>
 </html>
